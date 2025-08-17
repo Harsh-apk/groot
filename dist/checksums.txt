@@ -1,0 +1,2 @@
+6b57288b911efbf6863608954d86ac13cbeb9e0e3492fed3840b9eadc904302f  groot_0.0.0-SNAPSHOT-644cd86_darwin_amd64.tar.gz
+7a4fb655fec91e264ff881f4b93a67d5817dce80270691d2fb8678f504d3ec07  groot_0.0.0-SNAPSHOT-644cd86_darwin_arm64.tar.gz

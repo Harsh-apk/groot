@@ -1,0 +1,74 @@
+# This file configures the languages supported by Groot.
+languages:
+  - name: "Go"
+    file_extensions: [".go"]
+    queries:
+      - { type: "Function", query: "(function_declaration name: (identifier) @name)" }
+      - { type: "Method", query: "(method_declaration name: (field_identifier) @name)" }
+      - { type: "Interface", query: "(type_spec name: (type_identifier) @name (interface_type))" }
+      - { type: "Struct", query: "(type_spec name: (type_identifier) @name (struct_type))" }
+
+  # --- ROBUST JAVASCRIPT/JSX SECTION ---
+  - name: "JavaScript"
+    file_extensions: [".js", ".jsx", ".mjs", ".cjs"]
+    queries:
+      # Catches exported arrow function components: export const MyComponent = () => {}
+      - { type: "Component", query: "(export_statement declaration: (lexical_declaration (variable_declarator name: (identifier) @name value: (arrow_function))))" }
+      
+      # Catches internal arrow function components: const MyComponent = () => {}
+      - { type: "Component", query: "(lexical_declaration (variable_declarator name: (identifier) @name value: (arrow_function)))" }
+      
+      # Catches exported default functions: export default function MyComponent() {}
+      - { type: "Component", query: "(export_statement declaration: (function_declaration name: (identifier) @name))" }
+      
+      # --- NEW QUERY ---
+      # Catches exported variables/constants: export const metadata = {};
+      - { type: "Constant", query: "(export_statement declaration: (lexical_declaration (variable_declarator name: (identifier) @name)))" }
+
+      # Catches standard functions: function myFunction() {}
+      - { type: "Function", query: "(function_declaration name: (identifier) @name)" }
+      
+      # Catches exported default identifiers: export default MyComponent;
+      - { type: "Component", query: "(export_statement value: (identifier) @name)" }
+      
+      # Catches class components: class MyComponent {} and export class MyComponent {}
+      - { type: "Class", query: "(class_declaration name: (identifier) @name)" }
+      - { type: "Class Component", query: "(export_statement declaration: (class_declaration name: (identifier) @name))" }
+      
+      # Catches methods inside classes
+      - { type: "Method", query: "(method_definition name: (property_identifier) @name)" }
+
+  # ... (rest of your languages are unchanged) ...
+  - name: "Java"
+    file_extensions: [".java"]
+    queries:
+      - { type: "Controller", query: "((class_declaration (modifiers (annotation name: (identifier) @ann)) name: (identifier) @name) (#eq? @ann \"RestController\"))" }
+      - { type: "Service", query: "((class_declaration (modifiers (annotation name: (identifier) @ann)) name: (identifier) @name) (#eq? @ann \"Service\"))" }
+      - { type: "Repository", query: "((class_declaration (modifiers (annotation name: (identifier) @ann)) name: (identifier) @name) (#eq? @ann \"Repository\"))" }
+      - { type: "Class", query: "(class_declaration name: (identifier) @name)" }
+      - { type: "Method", query: "(method_declaration name: (identifier) @name)" }
+      - { type: "Interface", query: "(interface_declaration name: (identifier) @name)" }
+
+  - name: "Python"
+    file_extensions: [".py"]
+    queries:
+      - { type: "Function", query: "(function_definition name: (identifier) @name)" }
+      - { type: "Class", query: "(class_definition name: (identifier) @name)" }
+
+  - name: "Rust"
+    file_extensions: [".rs"]
+    queries:
+      - { type: "Function", query: "(function_item name: (identifier) @name)" }
+      - { type: "Struct", query: "(struct_item name: (type_identifier) @name)" }
+      - { type: "Enum", query: "(enum_item name: (type_identifier) @name)" }
+      - { type: "Trait", query: "(trait_item name: (type_identifier) @name)" }
+
+  - name: "HTML"
+    file_extensions: [".html", ".htm"]
+    queries: []
+
+  - name: "CSS"
+    file_extensions: [".css"]
+    queries:
+      - { type: "Class Selector", query: "(class_selector) @name" }
+      - { type: "ID Selector", query: "(id_selector) @name" }
